@@ -4,23 +4,39 @@ package lectures;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import beans.Car;
+import beans.Person;
 import com.google.common.collect.ImmutableList;
 import java.math.BigDecimal;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import mockdata.MockData;
 import org.junit.Test;
 
 public class Lecture7 {
 
+  Predicate<Car> yellowCarsOlderThan2000 = car->car.getColor().equalsIgnoreCase("Yellow")
+                                                  && car.getYear() > 2000;
+
   @Test
   public void count() throws Exception {
+    ImmutableList<Car> cars = MockData.getCars();
 
+    Long yellowCars = cars.stream()
+            .filter(yellowCarsOlderThan2000)
+            .collect(Collectors.counting());
+    System.out.println(yellowCars);
   }
 
   @Test
   public void min() throws Exception {
+    ImmutableList<Person> people = MockData.getPeople();
+
+    int minAge = people.stream()
+            .mapToInt(Person::getAge)
+            .min().getAsInt();
+    System.out.println(minAge);
 
   }
 
@@ -33,6 +49,12 @@ public class Lecture7 {
   @Test
   public void average() throws Exception {
     List<Car> cars = MockData.getCars();
+
+    double averageCarPrice = cars.stream()
+            .mapToDouble(Car::getPrice)
+            .average().getAsDouble();
+
+    System.out.println(averageCarPrice);
 
   }
 
