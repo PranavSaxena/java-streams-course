@@ -655,11 +655,64 @@ public class StreamAPIExercises {
     }
 
     static void exercise39() {
-
+//        divide them into two groups: Salary >= 50000 & Salary < 50000
+        Map<Boolean, List<Employee>> result = employees.stream()
+                .collect(Collectors.partitioningBy(n-> n.getSalary()>50000));
+        System.out.println(result);
     }
 
     static void exercise40() {
+        List<Integer> numbers = Arrays.asList(
+                10, 15, 20, 10, 25, 30, 15, 40, 50, 20
+        );
+        System.out.println(numbers);
 
+//      Unique numbers
+        List<Integer> result = numbers.stream()
+                .distinct()
+                .collect(Collectors.toList());
+        System.out.println("Unique numbers: " + result);
+
+//      Even numbers
+        result = numbers.stream()
+                .filter(n -> n%2==0)
+                .collect(Collectors.toList());
+        System.out.println("Even numbers: " + result);
+
+//      Numbers greater than 20
+        result = numbers.stream()
+                .filter(n->n>20)
+                .collect(Collectors.toList());
+        System.out.println("Numbers > 20: " + result);
+
+//      Second highest number
+        int secondHighest = numbers.stream()
+                .sorted(Comparator.reverseOrder())
+                .skip(1)
+                .max(Integer::compareTo).orElse(0);
+        System.out.println("secondHighest: "  + secondHighest);
+
+//      Sum of all numbers
+        int sum = numbers.stream()
+                .reduce(0, Integer::sum);
+        System.out.println("sum: " + sum);
+
+//      Average of all numbers
+        double average = numbers.stream()
+                .mapToInt(Integer::intValue)
+                .average().orElse(0);
+        System.out.println("average: " + average);
+
+//      Maximum number
+        int max = numbers.stream()
+                .max(Integer::compareTo).orElse(0);
+        System.out.println("max: " + max);
+
+//      Minimum number
+        int min = numbers.stream()
+                .sorted()
+                .findFirst().orElse(0);
+        System.out.println("min: " + min);
     }
 
     static void exercise41() {
@@ -733,7 +786,9 @@ public class StreamAPIExercises {
 //        exercise35();
 //        exercise36();
 //        exercise37();
-        exercise38();
+//        exercise38();
+//        exercise39();
+        exercise40();
     }
 
 }
