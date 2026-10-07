@@ -716,15 +716,111 @@ public class StreamAPIExercises {
     }
 
     static void exercise41() {
-
+        List<Integer> numbers = Arrays.asList(2, 3, 4, 5, 6);
+//      Square the Numbers
+        List<Integer> result = numbers.stream()
+                .map(n-> n*n)
+                .collect(Collectors.toList());
+        System.out.println(result);
     }
 
     static void exercise42() {
+        List<Integer> numbers = Arrays.asList(15, 8, 23, -4, 11, 30, 7, 30);
+        System.out.println(numbers);
 
+//      Find Odd Numbers in Descending Order
+        List<Integer> result = numbers.stream()
+                .filter(n -> n%2!=0)
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        System.out.println(result);
+
+//        Find the Largest Number
+        int largest = numbers.stream()
+                .mapToInt(Integer::intValue)
+                .max().orElse(0);
+        System.out.println("largest: " + largest);
+
+        int smallest = numbers.stream()
+                .sorted()
+                .findFirst().get();
+        System.out.println("smallest: " + smallest);
+
+        double average = numbers.stream()
+                .mapToInt(Integer::intValue)
+                .average().orElse(0.0);
+        System.out.println("average: " + average);
+
+        long greaterThan10 = numbers.stream()
+                .filter(n -> n > 10)
+                .count();
+        System.out.println("greaterThan10: " + greaterThan10);
+
+        boolean checkGreaterThan10 = numbers.stream()
+                .anyMatch(n->n>10);
+        System.out.println("checkGreaterThan10: " + checkGreaterThan10);
+
+        boolean checkAllPositive = numbers.stream()
+                .anyMatch(n-> n<0);
+        System.out.println(checkAllPositive);
+
+        List<Integer> removeDuplicate = numbers.stream()
+                .distinct()
+                .collect(Collectors.toList());
+        System.out.println(removeDuplicate);
+
+        int secondHighest = numbers.stream()
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .skip(1)
+                .findFirst().get();
+        System.out.println(secondHighest);
+
+        int secondLowest = numbers.stream()
+                .distinct()
+                .sorted()
+                .skip(1)
+                .findFirst().get();
+        System.out.println(secondLowest);
     }
 
     static void exercise43() {
+        List<String> names = Arrays.asList(
+                "John", "Alexander", "Bob", "Christopher", "David", "Sam"
+        );
+//        all names whose length is greater than 5
+        List<String> namesGreaterThan5 = names.stream()
+                .filter(n->n.length()>5)
+                .collect(Collectors.toList());
+        System.out.println(namesGreaterThan5);
 
+        // convert all to uppercase
+        List<String> allUppercase = names.stream()
+                .map(String::toUpperCase)
+                .collect(Collectors.toList());
+        System.out.println(allUppercase);
+
+//        names in descending alphabetical order.
+        List<String> namesDescending = names.stream()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        System.out.println(namesDescending);
+
+        // first long name (10)
+        String firstLongName = names.stream()
+                .filter(n->n.length()>10)
+                .findFirst().get();
+        System.out.println(firstLongName);
+
+        // check if Christopher is present
+        boolean checkName = names.stream()
+                .anyMatch(n->n.equals("Christopher"));
+        System.out.println(checkName);
+
+        // check empty string
+        boolean checkEmpty = names.stream()
+                .anyMatch(String::isEmpty);
+        System.out.println(checkEmpty);
     }
 
     static void exercise44() {
@@ -788,7 +884,10 @@ public class StreamAPIExercises {
 //        exercise37();
 //        exercise38();
 //        exercise39();
-        exercise40();
+//        exercise40();
+//        exercise41();
+//        exercise42();
+        exercise43();
     }
 
 }
