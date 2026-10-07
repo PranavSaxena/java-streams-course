@@ -541,60 +541,18 @@ public class StreamAPIExercises {
         System.out.println(result);
     }
 
-    static class Employee {
-        private String name;
-        private int age;
-        private double salary;
-        private String department;
-
-        public Employee(String name, int age, double salary, String department) {
-            this.name = name;
-            this.age = age;
-            this.salary = salary;
-            this.department = department;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getAge() {
-            return age;
-        }
-
-        public double getSalary() {
-            return salary;
-        }
-
-        public void setDepartment(String department) {
-            this.department = department;
-        }
-
-        public String getDepartment() {
-            return department;
-        }
-
-        @Override
-        public String toString() {
-            return "Employee{" +
-                    "name='" + name + '\'' +
-                    ", age=" + age +
-                    ", salary=" + salary +
-                    ", department='" + department + '\'' +
-                    '}';
-        }
-
-    }
 
     static List<Employee> employees = Arrays.asList(
-            new Employee("John", 28, 45000, "Sales"),
-            new Employee("Alex", 32, 65000, "IT"),
-            new Employee("Robert", 35, 85000, "Finance"),
-            new Employee("Emily", 26, 55000, "Sales"),
-            new Employee("David", 30, 40000, "IT"),
-            new Employee("Sophia", 29, 75000, "Finance"),
-            new Employee("Michael", 40, 50000, "Sales"),
-            new Employee("Emma", 31, 95000, "IT")
+            new Employee(1, "John", "IT", 60000, 28),
+            new Employee(2, "Alex", "HR", 45000, 32),
+            new Employee(3, "David", "IT", 80000, 35),
+            new Employee(4, "Sarah", "Finance", 70000, 29),
+            new Employee(5, "Mike", "IT", 55000, 26),
+            new Employee(6, "Emma", "HR", 65000, 30),
+            new Employee(7, "Robert", "Finance", 50000, 40),
+            new Employee(8, "Sophia", "IT", 90000, 32),
+            new Employee(9, "Daniel", "Finance", 75000, 31),
+            new Employee(10, "Olivia", "HR", 48000, 27)
     );
 
     static void exercise33() {
@@ -852,6 +810,15 @@ public class StreamAPIExercises {
         System.out.println(repeatedNames);
 
         // most frequently occurring name
+        String mostFrequentName = names.stream()
+                .collect(Collectors.groupingBy(name-> name, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
+        System.out.println(mostFrequentName);
+
     }
 
     static void exercise44() {
@@ -891,10 +858,119 @@ public class StreamAPIExercises {
                 .limit(3)
                 .collect(Collectors.toList());
         System.out.println(top3Unique);
+
+        // numbers occurring exactly once
+        List<Integer> exactlyOnce = numbers.stream()
+                .collect(Collectors.groupingBy(n-> n, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .filter(n->n.getValue()==1)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        System.out.println(exactlyOnce);
+
+        // separate odd and even
+        Map<Boolean, List<Integer>> separateOddEven = numbers.stream()
+                .collect(Collectors.partitioningBy(n -> n % 2 == 0));
+        System.out.println("Odd :" + separateOddEven.get(true));
+        System.out.println("Even :" + separateOddEven.get(false));
     }
 
     static void exercise45() {
+        System.out.println(employees);
 
+//      Employees With Salary Above 60,000
+        List<String> salaryAbove60k = employees.stream()
+                .filter(n->n.getSalary() > 60000)
+                .map(Employee::getName)
+                .collect(Collectors.toList());
+        System.out.println(salaryAbove60k);
+
+        // employee names
+        List<String> employeeNames = employees.stream()
+                .map(Employee::getName)
+                .collect(Collectors.toList());
+        System.out.println(employeeNames);
+
+        // IT employees
+        List<String> allITEmployees = employees.stream()
+                .filter(n->n.getDepartment().equals("IT"))
+                .map(Employee::getName)
+                .collect(Collectors.toList());
+        System.out.println(allITEmployees);
+
+        // sorted by salary
+        List<String> sortedBySalary = employees.stream()
+                .sorted(Comparator.comparing(Employee::getSalary).reversed())
+                .map(Employee::getName)
+                .collect(Collectors.toList());
+        System.out.println(sortedBySalary);
+
+        // highest paid employee
+        String highestPaidEmployee = employees.stream()
+                .max(Comparator.comparing(Employee::getSalary))
+                .map(Employee::getName).orElse(null);
+        System.out.println(highestPaidEmployee);
+
+        // lowest paid employee
+        String lowestPaidEmployee = employees.stream()
+                .min(Comparator.comparing(Employee::getSalary))
+                .map(Employee::getName)
+                .orElse(null);
+        System.out.println(lowestPaidEmployee);
+
+        // count IT employees
+        long totalITEmployees = employees.stream()
+                .filter(n -> n.getDepartment().equals("IT"))
+                .count();
+        System.out.println(totalITEmployees);
+
+        // count employees with salary above 60k
+        long employeeSalaryMoreThan60k = employees.stream()
+                .filter(n-> n.getSalary() > 60000)
+                .count();
+        System.out.println(employeeSalaryMoreThan60k);
+
+        // average IT salary
+        double averageSalary = employees.stream()
+                .filter(n-> n.getDepartment().equals("IT"))
+                .mapToDouble(Employee::getSalary)
+                .average().orElse(0);
+        System.out.println(averageSalary);
+
+        // total salary
+        double totalSalary = employees.stream()
+                .map(Employee::getSalary)
+                .reduce(Double::sum).get();
+        System.out.println(totalSalary);
+
+        // oldest employee
+        String oldestEmployee = employees.stream()
+                .max(Comparator.comparing(Employee::getAge))
+                .map(Employee::getName)
+                .orElse(null);
+        System.out.println(oldestEmployee);
+
+        // older than 30
+        List<String> employeesOlderThan30 = employees.stream()
+                .filter(n-> n.getAge() > 30)
+                .map(Employee::getName)
+                .collect(Collectors.toList());
+        System.out.println(employeesOlderThan30);
+
+        // employees between 50k and 70k
+        List<String> employeesBetween50kAnd70K = employees.stream()
+                .filter(n-> n.getSalary() >= 50000 && n.getSalary() <= 70000)
+                .map(Employee::getName)
+                .collect(Collectors.toList());
+        System.out.println(employeesBetween50kAnd70K);
+
+        // starting with S
+        List<String> startingWithS = employees.stream()
+                .map(Employee::getName)
+                .filter(name-> name.startsWith("S"))
+                .collect(Collectors.toList());
+        System.out.println(startingWithS);
     }
 
     static void exercise46() {
@@ -953,8 +1029,9 @@ public class StreamAPIExercises {
 //        exercise40();
 //        exercise41();
 //        exercise42();
-        exercise43();
+//        exercise43();
 //        exercise44();
+        exercise45();
     }
 
 }
