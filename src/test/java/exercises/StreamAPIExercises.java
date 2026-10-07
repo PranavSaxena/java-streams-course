@@ -786,11 +786,13 @@ public class StreamAPIExercises {
 
     static void exercise43() {
         List<String> names = Arrays.asList(
-                "John", "Alexander", "Bob", "Christopher", "David", "Sam"
+                "John", "Alexander", "Bob", "Christopher", "David", "Sam", "David"
         );
+        System.out.println(names);
+
 //        all names whose length is greater than 5
         List<String> namesGreaterThan5 = names.stream()
-                .filter(n->n.length()>5)
+                .filter(n -> n.length() > 5)
                 .collect(Collectors.toList());
         System.out.println(namesGreaterThan5);
 
@@ -808,23 +810,87 @@ public class StreamAPIExercises {
 
         // first long name (10)
         String firstLongName = names.stream()
-                .filter(n->n.length()>10)
+                .filter(n -> n.length() > 10)
                 .findFirst().get();
         System.out.println(firstLongName);
 
         // check if Christopher is present
         boolean checkName = names.stream()
-                .anyMatch(n->n.equals("Christopher"));
+                .anyMatch(n -> n.equals("Christopher"));
         System.out.println(checkName);
 
         // check empty string
         boolean checkEmpty = names.stream()
                 .anyMatch(String::isEmpty);
         System.out.println(checkEmpty);
+
+        // find string lengths
+        List<Integer> stringLength = names.stream()
+                .map(String::length)
+                .collect(Collectors.toList());
+        System.out.println(stringLength);
+
+        // total characters
+        long totalCharacters = names.stream()
+                .mapToInt(String::length)
+                .sum();
+        System.out.println(totalCharacters);
+
+        // 3 longest names
+        List<String> longest3Names = names.stream()
+                .distinct()
+                .sorted(Comparator.comparing(String::length).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
+        System.out.println(longest3Names);
+
+        // repeated names
+        Set<String> dup = new HashSet<>();
+        List<String> repeatedNames = names.stream()
+                .filter(name-> !dup.add(name))
+                .collect(Collectors.toList());
+        System.out.println(repeatedNames);
+
+        // most frequently occurring name
     }
 
     static void exercise44() {
+        List<Integer> numbers = Arrays.asList(
+                15, 42, 27, 60, 33, 18, 55, 27, 33, 60
+        );
+        System.out.println(numbers);
 
+        //largest even number
+        int largestEven = numbers.stream()
+                .filter(n->n%2==0)
+                .max(Comparator.comparing(Integer::intValue)).orElse(0);
+        System.out.println(largestEven);
+
+        int smallestOdd = numbers.stream()
+                .filter(n->n%2!=0)
+                .min(Comparator.comparing(Integer::intValue)).orElse(0);
+        System.out.println(smallestOdd);
+
+        // uniques in descending order
+        List<Integer> uniqueDescending = numbers.stream()
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        System.out.println(uniqueDescending);
+
+        // greater than average
+        List<Integer> greaterThanAverage = numbers.stream()
+                .filter(n-> n > numbers.stream().collect(Collectors.averagingInt(Integer::intValue)))
+                .collect(Collectors.toList());
+        System.out.println(greaterThanAverage);
+
+        // top 3 unique
+        List<Integer> top3Unique = numbers.stream()
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .limit(3)
+                .collect(Collectors.toList());
+        System.out.println(top3Unique);
     }
 
     static void exercise45() {
@@ -888,6 +954,7 @@ public class StreamAPIExercises {
 //        exercise41();
 //        exercise42();
         exercise43();
+//        exercise44();
     }
 
 }
